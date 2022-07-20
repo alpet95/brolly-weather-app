@@ -1,4 +1,11 @@
-# Weather City App
-Featured web development stack: Vue.js, HTML5, CSS3.<br>
-Single page app where you can check the weather in more than 200,000 places around the globe.<br>
-Website link: https://weathercity01.netlify.app.
+# Umbrella Weather Map
+
+Check the weather in more than 200,000 places around the globe.
+
+# Featured Stack
+
+Vue 2 (inc. Fetch API), CSS3, HTML5, Responsive Web Design.
+
+# URL
+
+https://weathercity01.netlify.app
