@@ -19,7 +19,10 @@
 
         <div class="icon-block">
           <div class="icon-container">
-            <img :src="`http://openweathermap.org/img/wn/${icon}@2x.png`" />
+            <img
+              v-if="icon"
+              :src="`http://openweathermap.org/img/wn/${icon}@2x.png`"
+            />
           </div>
         </div>
       </div>
