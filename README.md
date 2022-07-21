@@ -8,4 +8,4 @@ Vue 2 (inc. Fetch API), CSS3, HTML5, Responsive Web Design.
 
 # URL
 
-https://weather-umbrella.netlify.app
+https://brolly-weather.netlify.app
