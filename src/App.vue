@@ -1,9 +1,19 @@
 <template>
-  <div class="layout">
+  <div id="app">
     <container>
       <main class="main">
-        <search-box @get-weather-data="setWeatherData"></search-box>
+        <search-box
+          @get-weather-data="setWeatherData"
+          @get-loading-state="setLoadingState"
+          @get-error-state="setErrorState"
+        ></search-box>
+        <loading-spinner v-if="isLoading"></loading-spinner>
+        <error :error="error" v-else-if="!isLoading && error"></error>
+        <showcase-box
+          v-else-if="!isLoading && !weatherData.city"
+        ></showcase-box>
         <forecast-box
+          v-else-if="!isLoading && weatherData.city"
           :city="weatherData.city"
           :country="weatherData.country"
           :temperature="weatherData.temperature"
@@ -17,17 +27,20 @@
 
 <script>
 import Search from "./components/layout/Search.vue";
+import Showcase from "./components/layout/Showcase.vue";
 import Forecast from "./components/layout/Forecast.vue";
 
 export default {
   components: {
     "search-box": Search,
+    "showcase-box": Showcase,
     "forecast-box": Forecast,
   },
   data() {
     return {
       weatherData: {},
-      dateFormat: "",
+      isLoading: null,
+      error: null,
     };
   },
   methods: {
@@ -41,6 +54,12 @@ export default {
         icon: data.weather[0].icon,
       };
     },
+    setLoadingState(loading) {
+      this.isLoading = loading;
+    },
+    setErrorState(error) {
+      this.error = error;
+    },
   },
 };
 </script>
@@ -51,7 +70,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 body {
@@ -61,7 +80,7 @@ body {
   font-weight: 400;
 }
 
-.layout {
+#app {
   width: 100%;
   height: 100%;
   background: linear-gradient(to top, #2980b9, #2c3e50);
@@ -75,10 +94,5 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-section {
-  width: 100%;
-  height: auto;
 }
 </style>

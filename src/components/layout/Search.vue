@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { ERRORS } from "../../data/errors";
+
 export default {
   emits: ["get-weather-data"],
   data() {
@@ -18,25 +20,42 @@ export default {
       key: "9b6e6fc52460f07ffff6c8f28f989055",
       base: "https://api.openweathermap.org/data/2.5/",
       location: "",
+      isLoading: false,
+      error: null,
     };
   },
   methods: {
-    fetchData() {
-      const url = `${this.base}weather?q=${this.location}&units=metric&APPID=${this.key}`;
-      fetch(url)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Could not fetch data. Invalid response.");
+    async fetchData() {
+      this.isLoading = true;
+      this.$emit("get-loading-state", this.isLoading);
+      this.error = null;
+      this.$emit("get-error-state", this.error);
+
+      try {
+        const url = `${this.base}weather?q=${this.location}&units=metric&APPID=${this.key}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          const errorResponse = await response.json();
+          if (errorResponse.message === "city not found") {
+            throw new Error(ERRORS[0].text);
+          } else {
+            throw new Error(ERRORS[1].text);
           }
-          return response.json();
-        })
-        .then((data) => {
-          this.location = "";
-          this.$emit("get-weather-data", data);
-        })
-        .catch((error) => {
-          console.error(error.message);
-        });
+        }
+
+        const data = await response.json();
+        this.location = "";
+        this.$emit("get-weather-data", data);
+        this.isLoading = false;
+        this.$emit("get-loading-state", this.isLoading);
+      } catch (error) {
+        this.isLoading = false;
+        this.$emit("get-loading-state", this.isLoading);
+        this.error = error.message;
+        console.log(this.error);
+        this.$emit("get-error-state", this.error);
+      }
     },
   },
 };

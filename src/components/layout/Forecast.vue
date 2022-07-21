@@ -1,8 +1,6 @@
 <template>
-  <section>
-    <showcase-box v-show="!city"></showcase-box>
-
-    <div class="forecast-block" v-show="city">
+  <card>
+    <template #forecast>
       <div class="location-block">
         <p class="location-text" v-text="`${city}, ${country}`"></p>
         <p class="dateline-text" v-text="dateline"></p>
@@ -26,19 +24,15 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </template>
+  </card>
 </template>
 
 <script>
-import Showcase from "./Showcase.vue";
 import { MONTHS, WEEKDAYS } from "../../data/date";
 
 export default {
   props: ["city", "country", "temperature", "description", "icon"],
-  components: {
-    "showcase-box": Showcase,
-  },
   data() {
     return {
       dateline: "",
@@ -56,21 +50,6 @@ export default {
 </script>
 
 <style>
-.forecast-block {
-  max-width: 450px;
-  width: 100%;
-  height: 200px;
-  margin: 0 auto;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 10px;
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 3px 3px rgba(0, 0, 0, 0.25);
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
 .location-block {
   width: 100%;
   height: 40%;
