@@ -6,15 +6,27 @@
       placeholder="Search"
       v-model="location"
       @keypress.enter="fetchData"
+      @input="getSimilarCityNames"
     />
+    <dropdown-box
+      v-if="location"
+      :cities="searchCities"
+      :location="location"
+      @get-new-location="setNewLocation"
+    ></dropdown-box>
   </div>
 </template>
 
 <script>
+import Dropdown from "./Dropdown.vue";
 import { ERRORS } from "../../data/errors";
+import cities from "cities.json";
 
 export default {
-  emits: ["get-weather-data"],
+  emits: ["get-weather-data", "get-error-state", "get-loading-state"],
+  components: {
+    "dropdown-box": Dropdown,
+  },
   data() {
     return {
       key: "9b6e6fc52460f07ffff6c8f28f989055",
@@ -22,6 +34,8 @@ export default {
       location: "",
       isLoading: false,
       error: null,
+      cityData: [],
+      searchCities: [],
     };
   },
   methods: {
@@ -52,16 +66,50 @@ export default {
       } catch (error) {
         this.isLoading = false;
         this.$emit("get-loading-state", this.isLoading);
+        this.location = "";
         this.error = error.message;
-        console.log(this.error);
         this.$emit("get-error-state", this.error);
       }
     },
+    getCityNames() {
+      let cityInfo = [];
+      for (const key in cities) {
+        cityInfo.push({
+          name: cities[key].name,
+          country: cities[key].country,
+        });
+      }
+      this.cityData = cityInfo.map((cityItem) => {
+        return `${cityItem.name}, ${cityItem.country}`;
+      });
+    },
+    getSimilarCityNames() {
+      if (this.location !== "") {
+        this.searchCities = this.cityData
+          .filter((city) =>
+            city.toLowerCase().includes(this.location.toLowerCase())
+          )
+          .slice(0, 8);
+        return this.searchCities;
+      }
+    },
+    setNewLocation(newCity) {
+      this.location = newCity;
+    },
+  },
+  provide() {
+    return {
+      fetchData: this.fetchData,
+    };
+  },
+  created() {
+    this.getCityNames();
   },
 };
 </script>
 <style>
 .search-box {
+  position: relative;
   max-width: 300px;
   width: 100%;
   margin: 25px auto;

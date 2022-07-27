@@ -64,6 +64,7 @@ export default {
   font-size: 25px;
   font-weight: 700;
   text-align: center;
+  text-transform: capitalize;
   color: #fff;
 }
 
