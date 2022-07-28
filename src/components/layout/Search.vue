@@ -31,6 +31,7 @@ export default {
     return {
       key: "9b6e6fc52460f07ffff6c8f28f989055",
       base: "https://api.openweathermap.org/data/2.5/",
+      regexRemoveAccents: /[\u0300-\u036f]/g,
       location: "",
       isLoading: false,
       error: null,
@@ -75,8 +76,12 @@ export default {
       let cityInfo = [];
       for (const key in cities) {
         cityInfo.push({
-          name: cities[key].name,
-          country: cities[key].country,
+          name: cities[key].name
+            .normalize("NFD")
+            .replace(this.regexRemoveAccents, ""),
+          country: cities[key].country
+            .normalize("NFD")
+            .replace(this.regexRemoveAccents, ""),
         });
       }
       this.cityData = cityInfo.map((cityItem) => {
@@ -87,7 +92,7 @@ export default {
       if (this.location !== "") {
         this.searchCities = this.cityData
           .filter((city) =>
-            city.toLowerCase().includes(this.location.toLowerCase())
+            city.toLowerCase().startsWith(this.location.toLowerCase())
           )
           .slice(0, 8);
         return this.searchCities;

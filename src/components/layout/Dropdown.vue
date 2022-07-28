@@ -41,7 +41,7 @@ export default {
   width: 100%;
   height: auto;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.9);
   overflow: hidden;
 }
 
